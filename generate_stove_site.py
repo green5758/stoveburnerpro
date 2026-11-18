@@ -1,3 +1,14 @@
+Berikut adalah perbaikan lengkap untuk file `generate_stove_site.py`. 
+
+**Akar Masalah (Root Cause):**
+Error `TypeError: '<=' not supported between instances of 'str' and 'float'` terjadi karena variabel `page_data['climate']` dan `page_data['insulation']` didefinisikan sebagai **String** (teks) di dalam dictionary `home_preset` dan `ALL_CALC_PAGES`, namun di dalam fungsi `render_calculator_page` kode mencoba membandingkannya menggunakan operator matematika (`<=` atau `>`).
+
+**Solusi:**
+Saya telah mengubah tipe data untuk `insulation` dan `climate` dari string (misal `"1.0"`) menjadi float (misal `1.0`) pada data konfigurasi di bagian atas, dan menyesuaikan pengecekan pada fungsi `render_calculator_page` agar menggunakan tipe data float yang benar.
+
+Berikut adalah kode lengkap yang sudah diperbaiki dan siap untuk di-copy-paste:
+
+```python
 import os
 import json
 import math
@@ -442,19 +453,20 @@ def get_cumulative_product_reviews():
 # ==========================================
 # PROGRAMMATIC SEO STOVE & CORD PRESETS
 # ==========================================
+# FIXED: converted string representations of insulation and climate to floats
 STOVE_PRESETS = [
-    {"slug": "2000-sq-ft-home-wood-stove-btu-and-cord-calculator", "name": "2,000 Sq.Ft Home (2,200 Sq.Ft / 8' Ceiling — 80,000 BTU)", "sqft": 2200, "ceiling_ft": 8.0, "insulation": "1.0", "climate": "1.20", "fuel_type": "wood", "desc": "Calculate exact wood stove BTU output (80,000 BTU), winter firewood consumption (4.0 cords), Class-A chimney pipe length, and heating area (2,200 sq. ft.)."},
-    {"slug": "off-grid-cabin-small-wood-stove-cord-calculator", "name": "Off-Grid Cabin / Tiny Home (900 Sq.Ft — 50,000 BTU)", "sqft": 900, "ceiling_ft": 8.0, "insulation": "1.10", "climate": "1.30", "fuel_type": "wood", "desc": "Calculate 2.2 cords of firewood per winter, 50,000 BTU compact wood stove, 6-inch DuraTech chimney kit, and moisture meter guidelines."},
-    {"slug": "large-home-2500-sq-ft-wood-stove-cord-calculator", "name": "Large Home / Open-Concept Cabin (2,700 Sq.Ft — 110,000 BTU)", "sqft": 2700, "ceiling_ft": 9.0, "insulation": "1.0", "climate": "1.25", "fuel_type": "wood", "desc": "Size a massive 3.2 cu. ft. Drolet HT-3000 wood stove, 5.2 cords of hardwood per winter, and 110,000 BTU output for a 2,700 sq. ft. home."},
-    {"slug": "pellet-stove-tons-and-bags-calculator-per-winter", "name": "Pellet Stove Winter Consumption (3.5 Tons / 175 Bags of Pellets)", "sqft": 1800, "ceiling_ft": 8.0, "insulation": "1.0", "climate": "1.20", "fuel_type": "pellet", "desc": "Calculate exact wood pellet consumption in 40-lb bags (175 bags / 3.5 Tons) and hopper burn autonomy for a 1,800 sq. ft. home."},
-    {"slug": "chimney-pipe-length-and-roof-pitch-calculator-3-2-10-rule", "name": "Chimney Pipe Height & 3-2-10 Rule Calculator (15-Ft Flue)", "sqft": 1500, "ceiling_ft": 8.0, "insulation": "1.0", "climate": "1.10", "fuel_type": "wood", "desc": "Calculate Class-A chimney pipe lengths, roof flashing pitch, ceiling support box, and the mandatory 3-2-10 safety rule."},
-    {"slug": "workshop-garage-wood-heater-btu-cord-calculator", "name": "Detached Workshop / 2-Car Garage Wood Heater (1,200 Sq.Ft)", "sqft": 1200, "ceiling_ft": 10.0, "insulation": "1.30", "climate": "1.20", "fuel_type": "wood", "desc": "Calculate 60,000 BTU wood heater output, 3.1 cords of firewood, and double-wall stove pipe clearances for a 1,200 sq. ft. workshop."},
-    {"slug": "1500-sq-ft-home-wood-stove-calculator", "name": "1,500 Sq.Ft Home / Rancher (60,000 BTU — 3.0 Cords)", "sqft": 1500, "ceiling_ft": 8.0, "insulation": "1.0", "climate": "1.15", "fuel_type": "wood", "desc": "Size a 60,000 BTU EPA wood stove, 3.0 cords of seasoned hardwood, and blower fan kit for a 1,500 sq. ft. rancher home."},
-    {"slug": "3000-sq-ft-estate-wood-furnace-stove-calculator", "name": "3,000 Sq.Ft Large Estate / Farmhouse (120,000 BTU — 6 Cords)", "sqft": 3000, "ceiling_ft": 9.0, "insulation": "1.0", "climate": "1.30", "fuel_type": "wood", "desc": "Calculate 6.0 cords of firewood per winter, 120,000 BTU wood heating capacity, and 8-inch chimney flue sizing for a 3,000 sq. ft. estate."},
-    {"slug": "mild-climate-vs-severe-cold-wood-firewood-cord-calculator", "name": "Severe Cold Northern Climate Wood Consumption Calculator", "sqft": 2000, "ceiling_ft": 8.5, "insulation": "1.0", "climate": "1.40", "fuel_type": "wood", "desc": "Account for sub-zero winter multipliers (1.40x) to calculate exact firewood cord volume for northern US and Canadian winters."},
-    {"slug": "workshop-pellet-stove-bag-consumption-calculator", "name": "Workshop Pellet Stove (1,000 Sq.Ft — 2 Tons / 100 Bags)", "sqft": 1000, "ceiling_ft": 9.0, "insulation": "1.20", "climate": "1.15", "fuel_type": "pellet", "desc": "Calculate 100 bags of wood pellets (2 Tons) and daily hopper refueling intervals for a 1,000 sq. ft. workshop pellet stove."},
-    {"slug": "historic-home-poor-insulation-wood-stove-calculator", "name": "Drafty Historic Home / Older Farmhouse (1,800 Sq.Ft Poor Insulation)", "sqft": 1800, "ceiling_ft": 9.5, "insulation": "1.40", "climate": "1.25", "fuel_type": "wood", "desc": "Factor in poor insulation and tall 9.5-foot ceilings to size an 80,000 BTU wood stove and 4.8 cords of firewood."},
-    {"slug": "firewood-moisture-meter-and-seasoning-time-calculator", "name": "Firewood Seasoning Time & Moisture Meter Dryness Calculator", "sqft": 1500, "ceiling_ft": 8.0, "insulation": "1.0", "climate": "1.20", "fuel_type": "wood", "desc": "Calculate hardwood seasoning drying times (Oak = 24 mos, Maple = 12 mos) and Dr.meter moisture meter thresholds (<20%)."}
+    {"slug": "2000-sq-ft-home-wood-stove-btu-and-cord-calculator", "name": "2,000 Sq.Ft Home (2,200 Sq.Ft / 8' Ceiling — 80,000 BTU)", "sqft": 2200, "ceiling_ft": 8.0, "insulation": 1.0, "climate": 1.20, "fuel_type": "wood", "desc": "Calculate exact wood stove BTU output (80,000 BTU), winter firewood consumption (4.0 cords), Class-A chimney pipe length, and heating area (2,200 sq. ft.)."},
+    {"slug": "off-grid-cabin-small-wood-stove-cord-calculator", "name": "Off-Grid Cabin / Tiny Home (900 Sq.Ft — 50,000 BTU)", "sqft": 900, "ceiling_ft": 8.0, "insulation": 1.10, "climate": 1.30, "fuel_type": "wood", "desc": "Calculate 2.2 cords of firewood per winter, 50,000 BTU compact wood stove, 6-inch DuraTech chimney kit, and moisture meter guidelines."},
+    {"slug": "large-home-2500-sq-ft-wood-stove-cord-calculator", "name": "Large Home / Open-Concept Cabin (2,700 Sq.Ft — 110,000 BTU)", "sqft": 2700, "ceiling_ft": 9.0, "insulation": 1.0, "climate": 1.25, "fuel_type": "wood", "desc": "Size a massive 3.2 cu. ft. Drolet HT-3000 wood stove, 5.2 cords of hardwood per winter, and 110,000 BTU output for a 2,700 sq. ft. home."},
+    {"slug": "pellet-stove-tons-and-bags-calculator-per-winter", "name": "Pellet Stove Winter Consumption (3.5 Tons / 175 Bags of Pellets)", "sqft": 1800, "ceiling_ft": 8.0, "insulation": 1.0, "climate": 1.20, "fuel_type": "pellet", "desc": "Calculate exact wood pellet consumption in 40-lb bags (175 bags / 3.5 Tons) and hopper burn autonomy for a 1,800 sq. ft. home."},
+    {"slug": "chimney-pipe-length-and-roof-pitch-calculator-3-2-10-rule", "name": "Chimney Pipe Height & 3-2-10 Rule Calculator (15-Ft Flue)", "sqft": 1500, "ceiling_ft": 8.0, "insulation": 1.0, "climate": 1.10, "fuel_type": "wood", "desc": "Calculate Class-A chimney pipe lengths, roof flashing pitch, ceiling support box, and the mandatory 3-2-10 safety rule."},
+    {"slug": "workshop-garage-wood-heater-btu-cord-calculator", "name": "Detached Workshop / 2-Car Garage Wood Heater (1,200 Sq.Ft)", "sqft": 1200, "ceiling_ft": 10.0, "insulation": 1.30, "climate": 1.20, "fuel_type": "wood", "desc": "Calculate 60,000 BTU wood heater output, 3.1 cords of firewood, and double-wall stove pipe clearances for a 1,200 sq. ft. workshop."},
+    {"slug": "1500-sq-ft-home-wood-stove-calculator", "name": "1,500 Sq.Ft Home / Rancher (60,000 BTU — 3.0 Cords)", "sqft": 1500, "ceiling_ft": 8.0, "insulation": 1.0, "climate": 1.15, "fuel_type": "wood", "desc": "Size a 60,000 BTU EPA wood stove, 3.0 cords of seasoned hardwood, and blower fan kit for a 1,500 sq. ft. rancher home."},
+    {"slug": "3000-sq-ft-estate-wood-furnace-stove-calculator", "name": "3,000 Sq.Ft Large Estate / Farmhouse (120,000 BTU — 6 Cords)", "sqft": 3000, "ceiling_ft": 9.0, "insulation": 1.0, "climate": 1.30, "fuel_type": "wood", "desc": "Calculate 6.0 cords of firewood per winter, 120,000 BTU wood heating capacity, and 8-inch chimney flue sizing for a 3,000 sq. ft. estate."},
+    {"slug": "mild-climate-vs-severe-cold-wood-firewood-cord-calculator", "name": "Severe Cold Northern Climate Wood Consumption Calculator", "sqft": 2000, "ceiling_ft": 8.5, "insulation": 1.0, "climate": 1.40, "fuel_type": "wood", "desc": "Account for sub-zero winter multipliers (1.40x) to calculate exact firewood cord volume for northern US and Canadian winters."},
+    {"slug": "workshop-pellet-stove-bag-consumption-calculator", "name": "Workshop Pellet Stove (1,000 Sq.Ft — 2 Tons / 100 Bags)", "sqft": 1000, "ceiling_ft": 9.0, "insulation": 1.20, "climate": 1.15, "fuel_type": "pellet", "desc": "Calculate 100 bags of wood pellets (2 Tons) and daily hopper refueling intervals for a 1,000 sq. ft. workshop pellet stove."},
+    {"slug": "historic-home-poor-insulation-wood-stove-calculator", "name": "Drafty Historic Home / Older Farmhouse (1,800 Sq.Ft Poor Insulation)", "sqft": 1800, "ceiling_ft": 9.5, "insulation": 1.40, "climate": 1.25, "fuel_type": "wood", "desc": "Factor in poor insulation and tall 9.5-foot ceilings to size an 80,000 BTU wood stove and 4.8 cords of firewood."},
+    {"slug": "firewood-moisture-meter-and-seasoning-time-calculator", "name": "Firewood Seasoning Time & Moisture Meter Dryness Calculator", "sqft": 1500, "ceiling_ft": 8.0, "insulation": 1.0, "climate": 1.20, "fuel_type": "wood", "desc": "Calculate hardwood seasoning drying times (Oak = 24 mos, Maple = 12 mos) and Dr.meter moisture meter thresholds (<20%)."}
 ]
 
 def get_dynamic_sqft_and_fuel_pages():
@@ -956,10 +968,10 @@ def render_calculator_page(page_data, is_home=False):
                     <div>
                         <label for="insInput" class="block sm:text-sm text-xs font-bold text-gray-800 mb-1">Home Insulation Quality</label>
                         <select id="insInput" onchange="calculateStove()" class="w-full bg-gray-200 border border-gray-400 rounded-lg px-3.5 py-2.5 text-sm font-bold text-gray-900">
-                            <option value="0.90" {"selected" if page_data['insulation'] == "0.90" else ""}>New Construction / R-38 Attic (0.90x)</option>
-                            <option value="1.0" {"selected" if page_data['insulation'] == "1.0" else ""}>Standard Insulation / Double Pane (1.00x)</option>
-                            <option value="1.20" {"selected" if page_data['insulation'] in ("1.20", "1.30") else ""}>Workshop / Bonus Room Over Garage (1.20x)</option>
-                            <option value="1.40" {"selected" if page_data['insulation'] >= "1.40" else ""}>Drafty Historic Home / Poor Insulation (1.40x)</option>
+                            <option value="0.90" {"selected" if page_data['insulation'] == 0.90 else ""}>New Construction / R-38 Attic (0.90x)</option>
+                            <option value="1.0" {"selected" if page_data['insulation'] == 1.0 else ""}>Standard Insulation / Double Pane (1.00x)</option>
+                            <option value="1.20" {"selected" if page_data['insulation'] in (1.20, 1.30) else ""}>Workshop / Bonus Room Over Garage (1.20x)</option>
+                            <option value="1.40" {"selected" if page_data['insulation'] >= 1.40 else ""}>Drafty Historic Home / Poor Insulation (1.40x)</option>
                         </select>
                     </div>
 
@@ -1521,8 +1533,8 @@ def main():
         "name": "2,000 Sq.Ft Home (2,200 Sq.Ft / 8' Ceiling — 80,000 BTU)",
         "sqft": 2200,
         "ceiling_ft": 8.0,
-        "insulation": "1.0",
-        "climate": "1.20",
+        "insulation": 1.0,  # FIXED: float
+        "climate": 1.20,    # FIXED: float
         "fuel_type": "wood",
         "desc": "Calculate exact wood stove BTU output, winter firewood consumption in cords or 40-lb pellet bags, firebox size, and Class-A chimney pipe requirements—plus read 3 new winter heating reviews added daily."
     }
@@ -1564,3 +1576,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
