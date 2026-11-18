@@ -1,12 +1,6 @@
-Berikut adalah perbaikan lengkap untuk file `generate_stove_site.py`. 
+Mohon maaf atas kendala ini. Penyebab error `SyntaxError: invalid syntax` di baris 1 pada gambar yang Anda lampirkan adalah karena **teks pengantar/penjelasan bahasa Indonesia dari saya ikut ter-copy-paste** ke dalam file `generate_stove_site.py`. 
 
-**Akar Masalah (Root Cause):**
-Error `TypeError: '<=' not supported between instances of 'str' and 'float'` terjadi karena variabel `page_data['climate']` dan `page_data['insulation']` didefinisikan sebagai **String** (teks) di dalam dictionary `home_preset` dan `ALL_CALC_PAGES`, namun di dalam fungsi `render_calculator_page` kode mencoba membandingkannya menggunakan operator matematika (`<=` atau `>`).
-
-**Solusi:**
-Saya telah mengubah tipe data untuk `insulation` dan `climate` dari string (misal `"1.0"`) menjadi float (misal `1.0`) pada data konfigurasi di bagian atas, dan menyesuaikan pengecekan pada fungsi `render_calculator_page` agar menggunakan tipe data float yang benar.
-
-Berikut adalah kode lengkap yang sudah diperbaiki dan siap untuk di-copy-paste:
+File Python hanya boleh berisi kode murni. Berikut adalah kode yang sudah **100% bersih** tanpa teks pengantar, siap untuk di-copy dan langsung di-paste ke GitHub:
 
 ```python
 import os
@@ -453,7 +447,6 @@ def get_cumulative_product_reviews():
 # ==========================================
 # PROGRAMMATIC SEO STOVE & CORD PRESETS
 # ==========================================
-# FIXED: converted string representations of insulation and climate to floats
 STOVE_PRESETS = [
     {"slug": "2000-sq-ft-home-wood-stove-btu-and-cord-calculator", "name": "2,000 Sq.Ft Home (2,200 Sq.Ft / 8' Ceiling — 80,000 BTU)", "sqft": 2200, "ceiling_ft": 8.0, "insulation": 1.0, "climate": 1.20, "fuel_type": "wood", "desc": "Calculate exact wood stove BTU output (80,000 BTU), winter firewood consumption (4.0 cords), Class-A chimney pipe length, and heating area (2,200 sq. ft.)."},
     {"slug": "off-grid-cabin-small-wood-stove-cord-calculator", "name": "Off-Grid Cabin / Tiny Home (900 Sq.Ft — 50,000 BTU)", "sqft": 900, "ceiling_ft": 8.0, "insulation": 1.10, "climate": 1.30, "fuel_type": "wood", "desc": "Calculate 2.2 cords of firewood per winter, 50,000 BTU compact wood stove, 6-inch DuraTech chimney kit, and moisture meter guidelines."},
@@ -1533,8 +1526,8 @@ def main():
         "name": "2,000 Sq.Ft Home (2,200 Sq.Ft / 8' Ceiling — 80,000 BTU)",
         "sqft": 2200,
         "ceiling_ft": 8.0,
-        "insulation": 1.0,  # FIXED: float
-        "climate": 1.20,    # FIXED: float
+        "insulation": 1.0,
+        "climate": 1.20,
         "fuel_type": "wood",
         "desc": "Calculate exact wood stove BTU output, winter firewood consumption in cords or 40-lb pellet bags, firebox size, and Class-A chimney pipe requirements—plus read 3 new winter heating reviews added daily."
     }
